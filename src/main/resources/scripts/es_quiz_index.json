@@ -1,0 +1,60 @@
+{
+  "index_patterns": [
+    "quiz_*"
+  ],
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "_doc": {
+      "dynamic": false,
+      "properties": {
+        "id": {
+          "type": "keyword"
+        },
+        "createdBy": {
+          "type": "keyword"
+        },
+        "createdDate": {
+          "type": "date",
+          "format": "date_optional_time"
+        },
+        "question": {
+          "type": "text",
+          "analyzer": "english"
+        },
+        "answers": {
+          "properties": {
+            "content": {
+              "type": "text",
+              "analyzer": "german"
+            },
+            "isDefault": {
+              "type": "boolean"
+            }
+          }
+        },
+        "example": {
+          "type": "text",
+          "analyzer": "german"
+        },
+        "gender": {
+          "type": "keyword"
+        },
+        "isPublished": {
+          "type": "boolean"
+        },
+        "level": {
+          "type": "keyword"
+        },
+        "organizationId": {
+          "type": "keyword"
+        },
+        "topics": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}

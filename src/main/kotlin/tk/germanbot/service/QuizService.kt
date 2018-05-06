@@ -1,20 +1,20 @@
 package tk.germanbot.service
 
-import tk.germanbot.data.Quiz
+import tk.germanbot.data.QuizEntity
 import java.util.Random
 
 interface QuizService {
-    fun saveQuiz(userId: String, quiz: Quiz): Quiz
+    fun saveQuiz(userId: String, quiz: QuizEntity): QuizEntity
 
-    fun saveQuiz(userId: String, quiz: String, answer: String): Quiz
+    fun saveQuiz(userId: String, quiz: String, answer: String): QuizEntity
 
     fun checkAnswer(userId: String, quizId: String, answer: String): AnswerValidationResult
 
     fun getAnswer(quizId: String): String
 
-    fun getQuiz(questionId: String): Quiz
+    fun getQuiz(questionId: String): QuizEntity
 
-    fun getQuizzesByTopics(userId: String, topics: Set<String>, myOnly: Boolean = false): List<Quiz>
+    fun getQuizzesByTopics(userId: String, topics: Set<String>, myOnly: Boolean = false): List<QuizEntity>
 
     fun selectQuizzesForUser(userId: String, topics: Set<String>, totalQuestions: Int): List<String>
 

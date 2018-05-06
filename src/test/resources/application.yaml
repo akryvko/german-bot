@@ -1,0 +1,13 @@
+messenger4j:
+  appSecret: TEST_SECRET
+  verifyToken: TEST_TOKEN
+  pageAccessToken: TEST_PAGE_ACCESS_TOKEN
+
+elasticsearch:
+  host: localhost
+  port: 9222
+  quizIndexName: quiz_itest
+
+logging:
+  level:
+    pl.allegro.tech.embeddedelasticsearch: WARN

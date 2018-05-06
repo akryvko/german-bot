@@ -2,7 +2,7 @@ package tk.germanbot.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import tk.germanbot.data.Quiz
+import tk.germanbot.data.QuizEntity
 import tk.germanbot.data.QuizRepository
 import tk.germanbot.data.QuizTopic
 import tk.germanbot.data.QuizTopicRepository
@@ -24,7 +24,7 @@ class DynamoQuizService(
                 .eachCount()
     }
 
-    override fun saveQuiz(userId: String, quiz: Quiz): Quiz {
+    override fun saveQuiz(userId: String, quiz: QuizEntity): QuizEntity {
         quiz.validate()
 
         quiz.question = if (quiz.question != null) removeFormatting(quiz.question!!) else null
@@ -40,7 +40,7 @@ class DynamoQuizService(
         return question?.replace(Regex("\\*|_|`"), "")
     }
 
-    override fun saveQuiz(userId: String, question: String, answer: String): Quiz {
+    override fun saveQuiz(userId: String, question: String, answer: String): QuizEntity {
         val (q, topics) = extractTopics(question)
 
         val answers = answer.split("+")
@@ -48,11 +48,11 @@ class DynamoQuizService(
                 .filter(String::isNotBlank)
                 .toSet()
 
-        return saveQuiz(userId, Quiz(createdBy = userId, question = q, answers = answers, topics = topics))
+        return saveQuiz(userId, QuizEntity(createdBy = userId, question = q, answers = answers, topics = topics))
     }
 
     override fun checkAnswer(userId: String, quizId: String, answer: String): AnswerValidationResult {
-        val quiz = quizRepo.findOneById(quizId) ?: throw EntityNotFoundException(Quiz::class, quizId)
+        val quiz = quizRepo.findOneById(quizId) ?: throw EntityNotFoundException(QuizEntity::class, quizId)
         val validationResult = quizValidator.validate(answer, quiz.answers!!)
 
         statService.updateQuizStat(userId, quizId, quiz.topics!!, validationResult.result != Correctness.INCORRECT)
@@ -61,12 +61,12 @@ class DynamoQuizService(
     }
 
     override fun getAnswer(quizId: String): String {
-        val quiz = quizRepo.findOneById(quizId) ?: throw EntityNotFoundException(Quiz::class, quizId)
+        val quiz = quizRepo.findOneById(quizId) ?: throw EntityNotFoundException(QuizEntity::class, quizId)
         return quiz.answers!!.first()
     }
 
-    override fun getQuiz(quizId: String): Quiz {
-        val quiz = quizRepo.findOneById(quizId) ?: throw EntityNotFoundException(Quiz::class, quizId)
+    override fun getQuiz(quizId: String): QuizEntity {
+        val quiz = quizRepo.findOneById(quizId) ?: throw EntityNotFoundException(QuizEntity::class, quizId)
         return quiz
     }
 
@@ -110,7 +110,7 @@ class DynamoQuizService(
      * Returns list of user's quizzes and published quizzes by topics.
      * If topics list in empty return all quizzes.
      */
-    override fun getQuizzesByTopics(userId: String, topics: Set<String>, myOnly: Boolean): List<Quiz> {
+    override fun getQuizzesByTopics(userId: String, topics: Set<String>, myOnly: Boolean): List<QuizEntity> {
         val publishedQuiz = if (!myOnly)
             quizTopicRepo.findQuizIdsByTopics(topics + QuizTopic.PUBLISHED).toSet()
         else

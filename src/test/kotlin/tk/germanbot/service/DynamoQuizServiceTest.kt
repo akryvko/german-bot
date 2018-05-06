@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.runners.MockitoJUnitRunner
-import tk.germanbot.data.Quiz
+import tk.germanbot.data.QuizEntity
 import tk.germanbot.data.QuizRepository
 import tk.germanbot.data.QuizTopic
 import tk.germanbot.data.QuizTopicRepository
@@ -35,7 +35,7 @@ class DynamoQuizServiceTest {
     fun saveQuizCanParseTopicsAndAnswers() {
         service!!.saveQuiz("id", "Question with topics  #A1 #some_topic", "  answer1 + this is answer2  ")
 
-        val quizCaptor = argumentCaptor<Quiz>()
+        val quizCaptor = argumentCaptor<QuizEntity>()
         verify(quizRepo!!).save(quizCaptor.capture())
 
         Assertions.assertThat(quizCaptor.firstValue.createdBy).isEqualTo("id")
@@ -48,7 +48,7 @@ class DynamoQuizServiceTest {
     fun saveQuizCanParseTopicsAndAnswersSimpleCase() {
         service!!.saveQuiz("id", "Question with no topics ", "  answer1")
 
-        val quizCaptor = argumentCaptor<Quiz>()
+        val quizCaptor = argumentCaptor<QuizEntity>()
         verify(quizRepo!!).save(quizCaptor.capture())
 
         Assertions.assertThat(quizCaptor.firstValue.createdBy).isEqualTo("id")
@@ -61,7 +61,7 @@ class DynamoQuizServiceTest {
     fun saveQuizCanParseTopicsAndAnswersEmptyCase() {
         service!!.saveQuiz("id", "Question with empty topics # ## ## ", "  answer1+")
 
-        val quizCaptor = argumentCaptor<Quiz>()
+        val quizCaptor = argumentCaptor<QuizEntity>()
         verify(quizRepo!!).save(quizCaptor.capture())
 
         Assertions.assertThat(quizCaptor.firstValue.createdBy).isEqualTo("id")

@@ -32,7 +32,7 @@ class WelcomeActivity(
 
     private val logger = LoggerFactory.getLogger(WelcomeActivity::class.java)
 
-    override val helpText = "Now you can:" +
+    override val helpText = "Now you can:\n" +
             "#q [topics] - start quick quiz\n" +
             "#a - add quiz\n" +
             "#aa [topics] - add multiple quizzes\n" +

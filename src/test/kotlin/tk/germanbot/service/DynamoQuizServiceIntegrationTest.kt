@@ -18,7 +18,7 @@ import tk.germanbot.DynamoTools
 import tk.germanbot.IntegrationTestsConfig
 import tk.germanbot.data.QUIZ_TABLE_NANE
 import tk.germanbot.data.QUIZ_TOPIC_TABLE_NANE
-import tk.germanbot.data.Quiz
+import tk.germanbot.data.QuizEntity
 import tk.germanbot.data.QuizTopic
 import tk.germanbot.data.QuizTopicRepository
 import tk.germanbot.data.USER_QUIIZ_STAT_TABLE_NANE
@@ -49,15 +49,15 @@ class DynamoQuizServiceIntegrationTest {
     private var quizTopicsRepo: QuizTopicRepository? = null
 
     // to test auto-generated Id
-    private val q1 = Quiz(createdBy = "me", question = "Q1", answers = setOf("A"), topics = setOf("A"))
+    private val q1 = QuizEntity(createdBy = "me", question = "Q1", answers = setOf("A"), topics = setOf("A"))
 
     @Before
     @Throws(Exception::class)
     fun setup() {
-        TableUtils.deleteTableIfExists(db, mapper!!.generateDeleteTableRequest(Quiz::class.java))
+        TableUtils.deleteTableIfExists(db, mapper!!.generateDeleteTableRequest(QuizEntity::class.java))
         TableUtils.deleteTableIfExists(db, mapper!!.generateDeleteTableRequest(QuizTopic::class.java))
         TableUtils.deleteTableIfExists(db, mapper!!.generateDeleteTableRequest(UserQuizStat::class.java))
-        dynamoTools!!.createTableIfNotExist(mapper!!, db!!, Quiz::class.java, QUIZ_TABLE_NANE)
+        dynamoTools!!.createTableIfNotExist(mapper!!, db!!, QuizEntity::class.java, QUIZ_TABLE_NANE)
         dynamoTools!!.createTableIfNotExist(mapper!!, db!!, QuizTopic::class.java, QUIZ_TOPIC_TABLE_NANE)
         dynamoTools!!.createTableIfNotExist(mapper!!, db!!, UserQuizStat::class.java, USER_QUIIZ_STAT_TABLE_NANE)
         TableUtils.waitUntilActive(db, QUIZ_TABLE_NANE)
@@ -65,11 +65,11 @@ class DynamoQuizServiceIntegrationTest {
         TableUtils.waitUntilActive(db, USER_QUIIZ_STAT_TABLE_NANE)
 
         quizService!!.saveQuiz("me", q1)
-        quizService!!.saveQuiz("me", Quiz(id = "2", createdBy = "me", question = "Q2", answers = setOf("A"), topics = setOf("B")))
-        quizService!!.saveQuiz("me", Quiz(id = "3", createdBy = "me", question = "Q3", answers = setOf("A"), topics = setOf("A", "B")))
-        quizService!!.saveQuiz("me", Quiz(id = "4", createdBy = "me", question = "Q4", answers = setOf("A"), topics = setOf("C", "A")))
-        quizService!!.saveQuiz("me", Quiz(isPublished = true, id = "5", createdBy = "NOT_ME", question = "Q5", answers = setOf("A"), topics = setOf("A", "B", "C")))
-        quizService!!.saveQuiz("me", Quiz(id = "6", createdBy = "NOT_ME", question = "Q5", answers = setOf("A"), topics = setOf("A", "B", "C")))
+        quizService!!.saveQuiz("me", QuizEntity(id = "2", createdBy = "me", question = "Q2", answers = setOf("A"), topics = setOf("B")))
+        quizService!!.saveQuiz("me", QuizEntity(id = "3", createdBy = "me", question = "Q3", answers = setOf("A"), topics = setOf("A", "B")))
+        quizService!!.saveQuiz("me", QuizEntity(id = "4", createdBy = "me", question = "Q4", answers = setOf("A"), topics = setOf("C", "A")))
+        quizService!!.saveQuiz("me", QuizEntity(isPublished = true, id = "5", createdBy = "NOT_ME", question = "Q5", answers = setOf("A"), topics = setOf("A", "B", "C")))
+        quizService!!.saveQuiz("me", QuizEntity(id = "6", createdBy = "NOT_ME", question = "Q5", answers = setOf("A"), topics = setOf("A", "B", "C")))
 
         TableUtils.waitUntilActive(db, QUIZ_TOPIC_TABLE_NANE)
     }
@@ -112,26 +112,26 @@ class DynamoQuizServiceIntegrationTest {
     fun getQuizzesByTopicsCanGetQuizzes() {
         val questions = quizService!!.getQuizzesByTopics("me", setOf("A"))
         Assertions.assertThat(questions).hasSize(4)
-        Assertions.assertThat(questions.map(Quiz::id)).contains(q1.id, "3", "4", "5")
+        Assertions.assertThat(questions.map(QuizEntity::id)).contains(q1.id, "3", "4", "5")
 
         val questionIds2 = quizService!!.getQuizzesByTopics("me", setOf("B"))
         Assertions.assertThat(questionIds2).hasSize(3)
-        Assertions.assertThat(questionIds2.map(Quiz::id)).contains("2", "3", "5")
+        Assertions.assertThat(questionIds2.map(QuizEntity::id)).contains("2", "3", "5")
 
         val questionIds3 = quizService!!.getQuizzesByTopics("me", setOf("A", "B"))
         Assertions.assertThat(questionIds3).hasSize(2)
-        Assertions.assertThat(questionIds3.map(Quiz::id)).contains("3", "5")
+        Assertions.assertThat(questionIds3.map(QuizEntity::id)).contains("3", "5")
 
         val questionIds4 = quizService!!.getQuizzesByTopics("me", setOf("A", "C", "B"))
         Assertions.assertThat(questionIds4).hasSize(1)
-        Assertions.assertThat(questionIds4.map(Quiz::id)).contains("5")
+        Assertions.assertThat(questionIds4.map(QuizEntity::id)).contains("5")
 
         val questions5 = quizService!!.getQuizzesByTopics("me", setOf("A"), true)
         Assertions.assertThat(questions5).hasSize(3)
-        Assertions.assertThat(questions5.map(Quiz::id)).contains(q1.id, "3", "4")
+        Assertions.assertThat(questions5.map(QuizEntity::id)).contains(q1.id, "3", "4")
 
         val questions6 = quizService!!.getQuizzesByTopics("me", setOf(), false)
         Assertions.assertThat(questions6).hasSize(5)
-        Assertions.assertThat(questions6.map(Quiz::id)).contains(q1.id, "2", "3", "4", "5")
+        Assertions.assertThat(questions6.map(QuizEntity::id)).contains(q1.id, "2", "3", "4", "5")
     }
 }

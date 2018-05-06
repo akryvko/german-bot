@@ -40,19 +40,19 @@ class QuizRepositoryIntegrationTest {
     @Autowired
     private var dynamoTools: DynamoTools? = null
 
-    var hello: Quiz? = null
+    var hello: QuizEntity? = null
 
     @Before
     @Throws(Exception::class)
     fun setup() {
         dynamoDBMapper = DynamoDBMapper(db)
 
-        dynamoTools!!.createTableIfNotExist(dynamoDBMapper!!, db!!, Quiz::class.java, QUIZ_TABLE_NANE)
+        dynamoTools!!.createTableIfNotExist(dynamoDBMapper!!, db!!, QuizEntity::class.java, QUIZ_TABLE_NANE)
         TableUtils.waitUntilActive(db, QUIZ_TABLE_NANE)
 
         dynamoDBMapper!!.batchDelete(repository!!.findAll())
 
-        hello = repository?.save(Quiz(createdBy = "user", question = EXPECTED_Q, answers = setOf(EXPECTED_A), topics = setOf("A", "B")))
+        hello = repository?.save(QuizEntity(createdBy = "user", question = EXPECTED_Q, answers = setOf(EXPECTED_A), topics = setOf("A", "B")))
     }
 
     @Test
@@ -73,13 +73,13 @@ class QuizRepositoryIntegrationTest {
 
     @Test
     fun updateById() {
-        repository!!.save(Quiz(id = "123", createdBy = "me", question = "Q", answers = setOf("A1"), topics = setOf("A", "B")))
+        repository!!.save(QuizEntity(id = "123", createdBy = "me", question = "Q", answers = setOf("A1"), topics = setOf("A", "B")))
 
         val savedQ = repository!!.findOneById("123")
         assertThat(savedQ).isNotNull()
         assertThat(savedQ!!.question).isEqualTo("Q")
 
-        repository!!.save(Quiz(id = "123", createdBy = "me", question = "QQ", answers = setOf("A1"), topics = setOf("A", "B")))
+        repository!!.save(QuizEntity(id = "123", createdBy = "me", question = "QQ", answers = setOf("A1"), topics = setOf("A", "B")))
 
         val updatedQ = repository!!.findOneById("123")
         assertThat(updatedQ).isNotNull()

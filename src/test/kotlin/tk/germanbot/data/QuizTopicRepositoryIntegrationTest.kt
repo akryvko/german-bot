@@ -52,9 +52,9 @@ class QuizTopicRepositoryIntegrationTest {
 
     @Test
     fun canCreateTopicsForNewQuiz() {
-        val q1 = Quiz(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
+        val q1 = QuizEntity(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
         repo!!.saveTopics(q1)
-        val q2 = Quiz(id = "q2", createdBy = "me", question = "Q2", answers = setOf("A2"), topics = setOf("A1", "B1"))
+        val q2 = QuizEntity(id = "q2", createdBy = "me", question = "Q2", answers = setOf("A2"), topics = setOf("A1", "B1"))
         repo!!.saveTopics(q2)
 
         val saved = repo!!.findTopics(q1)
@@ -64,7 +64,7 @@ class QuizTopicRepositoryIntegrationTest {
 
     @Test
     fun canUpdateTopicsForExistingQuiz() {
-        val q1 = Quiz(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
+        val q1 = QuizEntity(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
         repo!!.saveTopics(q1)
 
         val saved = repo!!.findTopics(q1)
@@ -81,7 +81,7 @@ class QuizTopicRepositoryIntegrationTest {
 
     @Test
     fun canPublishQuiz() {
-        val q1 = Quiz(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
+        val q1 = QuizEntity(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
         repo!!.saveTopics(q1)
 
         val saved = repo!!.findTopics(q1)
@@ -99,11 +99,11 @@ class QuizTopicRepositoryIntegrationTest {
 
     @Test
     fun canGetQuizByTopic() {
-        val q1 = Quiz(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
+        val q1 = QuizEntity(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
         repo!!.saveTopics(q1)
-        val q2 = Quiz(id = "q2", createdBy = "me", question = "Q2", answers = setOf("A2"), topics = setOf("A", "C"))
+        val q2 = QuizEntity(id = "q2", createdBy = "me", question = "Q2", answers = setOf("A2"), topics = setOf("A", "C"))
         repo!!.saveTopics(q2)
-        val q3 = Quiz(id = "q3", createdBy = "me", question = "Q3", answers = setOf("A3"), topics = setOf("A", "C", "B"), isPublished = true)
+        val q3 = QuizEntity(id = "q3", createdBy = "me", question = "Q3", answers = setOf("A3"), topics = setOf("A", "C", "B"), isPublished = true)
         repo!!.saveTopics(q3)
 
         val qA = repo!!.findQuizIdsByTopics(setOf("B", "me"))
@@ -129,11 +129,11 @@ class QuizTopicRepositoryIntegrationTest {
 
     @Test
     fun canGetQuizByTopicRandom() {
-        val q1 = Quiz(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
+        val q1 = QuizEntity(id = "q1", createdBy = "me", question = "Q", answers = setOf("A"), topics = setOf("A", "B"))
         repo!!.saveTopics(q1)
-        val q2 = Quiz(id = "q2", createdBy = "me", question = "Q2", answers = setOf("A2"), topics = setOf("A", "C"))
+        val q2 = QuizEntity(id = "q2", createdBy = "me", question = "Q2", answers = setOf("A2"), topics = setOf("A", "C"))
         repo!!.saveTopics(q2)
-        val q3 = Quiz(id = "q3", createdBy = "me", question = "Q3", answers = setOf("A3"), topics = setOf("A", "C", "B"), isPublished = true)
+        val q3 = QuizEntity(id = "q3", createdBy = "me", question = "Q3", answers = setOf("A3"), topics = setOf("A", "C", "B"), isPublished = true)
         repo!!.saveTopics(q3)
 
         val qA = repo!!.findNRandomQuizIdsByTopics(setOf("B", "me"), 3)

@@ -1,22 +1,22 @@
 package tk.germanbot.service
 
-import tk.germanbot.data.Quiz
+import tk.germanbot.data.QuizEntity
 import java.util.Scanner
 
 
 interface QuizFileGenerator {
 
-    fun generateFile(quizzes: List<Quiz>): String
+    fun generateFile(quizzes: List<QuizEntity>): String
 
 }
 
 interface QuizSource {
-    fun getQuizzes(): List<Quiz>
+    fun getQuizzes(): List<QuizEntity>
 }
 
 class QuizTextFileGenerator : QuizFileGenerator {
 
-    override fun generateFile(quizzes: List<Quiz>): String {
+    override fun generateFile(quizzes: List<QuizEntity>): String {
         val builder = StringBuilder()
         for (quiz in quizzes) {
             if (quiz.id != null) {
@@ -50,11 +50,11 @@ class QuizTextFileParser(
         private val userId: String,
         private val content: String
 ) : QuizSource {
-    override fun getQuizzes(): List<Quiz> {
+    override fun getQuizzes(): List<QuizEntity> {
         val scanner = Scanner(content)
 
         var globalTopics = listOf<String>()
-        var quizzes = listOf<Quiz>()
+        var quizzes = listOf<QuizEntity>()
         var isFirstLine = true
         while (scanner.hasNextLine()) {
             val firstLine = scanner.nextLine().trim()
@@ -101,7 +101,7 @@ class QuizTextFileParser(
                 answers += line
             }
 
-            quizzes += Quiz(id = id, createdBy = userId, question = question,
+            quizzes += QuizEntity(id = id, createdBy = userId, question = question,
                     answers = answers, topics = topics + globalTopics,
                     isPublished = isPublished, example = example)
         }
