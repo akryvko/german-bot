@@ -1,6 +1,7 @@
 package tk.germanbot.service
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 import tk.germanbot.data.QuizEntity
 import tk.germanbot.data.QuizTopic
 import tk.germanbot.data.es.EsQuizRepository
@@ -8,22 +9,21 @@ import tk.germanbot.model.Quiz
 import tk.germanbot.model.QuizAnswer
 import java.util.Optional
 
-
-class QuizService2Impl(
+@Service
+class QuizServiceImpl(
         @Autowired val quizRepository: EsQuizRepository,
         @Autowired private val quizValidator: QuizValidator,
         @Autowired private val statService: UserStatService
-) : QuizService2 {
+) : QuizService {
 
     override fun saveQuiz(userId: String, userQuestionInput: String, userAnswersInput: String): Quiz {
         val (question, topics) = QuestionString.parse(userQuestionInput);
 
-        val answers = userAnswersInput.split("+")
-                .map(::removeFormatting)
-                .map(String::trim)
-                .filter(String::isNotBlank)
-                .mapIndexed { idx, answer -> QuizAnswer(answer, idx == 0) }
-                .toSet()
+        val answers = QuizAnswer.fromStrings(
+                userAnswersInput.split("+")
+                        .map(::removeFormatting)
+                        .map(String::trim)
+                        .filter(String::isNotBlank))
 
         val quiz = Quiz(
                 createdBy = userId,
@@ -32,6 +32,10 @@ class QuizService2Impl(
                 topics = topics
         )
 
+        return saveQuiz(quiz)
+    }
+
+    override fun saveQuiz(quiz: Quiz): Quiz {
         quiz.validate()
         quizRepository.saveQuiz(quiz)
         return quiz
@@ -68,12 +72,12 @@ class QuizService2Impl(
             quizRepository.findByTopics(topics)
     }
 
-    override fun selectQuizzesForUser(userId: String, topics: Set<String>, totalQuestions: Int): List<String> {
-        TODO("not implemented")
+    override fun selectQuizzesForUser(userId: String, topics: Set<String>, totalQuestions: Int): List<Quiz> {
+        return quizRepository.findRandomByUserAndTopics(userId, topics, totalQuestions)
     }
 
     override fun getTopicsToQuizCount(userId: String): Map<String, Int> {
-        TODO("not implemented")
+        return mapOf()
     }
 
     private fun removeFormatting(str: String): String {

@@ -37,6 +37,12 @@ data class Quiz(
         val isPublished: Boolean = false
 
 ) {
+
+    val answersContent: List<String>
+        get() = answers
+                .sortedByDescending(QuizAnswer::isDefault)
+                .map(QuizAnswer::content)
+
     fun validate() {
         if (question.isBlank()) throw EntityValidationException(QuizDoc::class, "Blank question for quiz $id")
         if (createdBy.isBlank()) throw EntityValidationException(QuizDoc::class, "CreatedBy is null in $id")
@@ -48,4 +54,11 @@ data class Quiz(
 data class QuizAnswer(
         val content: String,
         val isDefault: Boolean = false
-)
+) {
+
+    companion object {
+        fun fromStrings(answers: Iterable<String>): Set<QuizAnswer> =
+                answers.mapIndexed { idx, a -> QuizAnswer(a, idx == 0) }.toSet()
+    }
+
+}

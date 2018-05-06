@@ -10,6 +10,7 @@ import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.common.xcontent.XContentType
 import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders
 import org.elasticsearch.rest.RestStatus
 import org.elasticsearch.search.builder.SearchSourceBuilder
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +19,7 @@ import tk.germanbot.EsProperties
 import tk.germanbot.model.Quiz
 import java.io.InputStreamReader
 import java.util.Optional
+import java.util.Random
 
 
 @Component
@@ -99,6 +101,15 @@ class EsQuizRepository(
         return boolQuery;
     }
 
+    private fun addTermsQuery(boolQuery: BoolQueryBuilder, topics: Set<String>): BoolQueryBuilder {
+        for (topic in topics) {
+            boolQuery.must(
+                    QueryBuilders.termQuery("topics", topic)
+            )
+        }
+        return boolQuery;
+    }
+
     private fun extractQuizzHits(response: SearchResponse): List<Quiz> {
         if (response.status() != RestStatus.OK) {
             throw ElasticsearchException("Got error status from Elastic: ", response.status())
@@ -111,6 +122,25 @@ class EsQuizRepository(
                     }
                 }
                 .map(quizDocConverter::convert)
+    }
+
+    fun findRandomByUserAndTopics(userId: String, topics: Set<String>, totalQuestions: Int): List<Quiz> {
+        val searchSourceBuilder = SearchSourceBuilder()
+        searchSourceBuilder.from(0)
+        searchSourceBuilder.size(totalQuestions)
+        searchSourceBuilder.query(
+                QueryBuilders.functionScoreQuery(
+                        addTermsQuery(QueryBuilders.boolQuery(), topics)
+                                .must(
+                                        QueryBuilders.termQuery("createdBy", userId)),
+                        ScoreFunctionBuilders.randomFunction().seed(Random().nextLong()))
+        )
+
+        val searchRequest = SearchRequest(elasticProps.quizIndexName)
+        searchRequest.source(searchSourceBuilder)
+
+        val response = client.search(searchRequest)
+        return extractQuizzHits(response)
     }
 
 }

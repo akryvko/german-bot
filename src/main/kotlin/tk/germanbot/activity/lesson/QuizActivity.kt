@@ -1,7 +1,9 @@
 package tk.germanbot.activity.lesson
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import tk.germanbot.MessengerConfig
 import tk.germanbot.activity.Activity
 import tk.germanbot.activity.ActivityData
 import tk.germanbot.activity.ActivityManager
@@ -33,14 +35,23 @@ class QuizActivity(
         @Autowired val quizService: QuizService,
         @Autowired val hintService: HintService
 ) : Activity<QuizActivityData>() {
+
+    private val logger = LoggerFactory.getLogger(MessengerConfig::class.java)
+
     override val helpText = "Answer the question above or:\n" +
             "#h - get hint, #end - end lesson"
 
     override fun onStart(data: QuizActivityData) {
-        val quiz = quizService.getQuiz(data.quizId)
-        if (quiz.answers != null) {
-            data.correctAnswers = quiz.answers!!
+        val quizOpt = quizService.getQuiz(data.quizId)
+
+        if (!quizOpt.isPresent) {
+            logger.error("Quiz with id {} not found!", data.quizId)
+            return
         }
+
+        val quiz = quizOpt.get()
+
+        data.correctAnswers = quiz.answersContent.toSet()
         data.example = quiz.example
         messageGateway.textMessage(data.userId, "❓ ${quiz.question!!}")
     }

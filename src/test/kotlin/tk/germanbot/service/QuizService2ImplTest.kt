@@ -9,13 +9,13 @@ import tk.germanbot.data.es.EsQuizRepository
 import tk.germanbot.model.Quiz
 import tk.germanbot.model.QuizAnswer
 
-class QuizService2ImplTest {
+class QuizServiceImplTest {
 
     private val repo = mock(EsQuizRepository::class.java)
     private val quizValidator = mock(QuizValidator::class.java)
     private val statService = mock(UserStatService::class.java)
 
-    private val service = QuizService2Impl(repo, quizValidator, statService)
+    private val service = QuizServiceImpl(repo, quizValidator, statService)
 
     @Test
     fun saveQuiz() {

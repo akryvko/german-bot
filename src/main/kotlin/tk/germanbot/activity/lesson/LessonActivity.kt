@@ -9,6 +9,7 @@ import tk.germanbot.activity.ConfirmationActivityData
 import tk.germanbot.activity.Event
 import tk.germanbot.activity.UserCommand
 import tk.germanbot.messenger.MessageButton
+import tk.germanbot.model.Quiz
 import tk.germanbot.service.Correctness
 import tk.germanbot.service.MessageGateway
 import tk.germanbot.service.QuizService
@@ -37,6 +38,7 @@ class LessonActivity(
     override fun onStart(data: LessonActivityData) {
         if (data.questionIds == null || data.questionIds.isEmpty()) {
             data.questionIds = quizService.selectQuizzesForUser(data.userId, data.topics, data.desiredQuestions)
+                    .map(Quiz::id)
         }
 
         data.totalQuestions = data.questionIds.size

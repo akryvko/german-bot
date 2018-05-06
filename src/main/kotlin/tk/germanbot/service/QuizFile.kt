@@ -1,22 +1,24 @@
 package tk.germanbot.service
 
-import tk.germanbot.data.QuizEntity
+import tk.germanbot.model.Quiz
+import tk.germanbot.model.QuizAnswer
 import java.util.Scanner
+import java.util.UUID
 
 
 interface QuizFileGenerator {
 
-    fun generateFile(quizzes: List<QuizEntity>): String
+    fun generateFile(quizzes: List<Quiz>): String
 
 }
 
 interface QuizSource {
-    fun getQuizzes(): List<QuizEntity>
+    fun getQuizzes(): List<Quiz>
 }
 
 class QuizTextFileGenerator : QuizFileGenerator {
 
-    override fun generateFile(quizzes: List<QuizEntity>): String {
+    override fun generateFile(quizzes: List<Quiz>): String {
         val builder = StringBuilder()
         for (quiz in quizzes) {
             if (quiz.id != null) {
@@ -26,7 +28,7 @@ class QuizTextFileGenerator : QuizFileGenerator {
 
             builder.appendln(quiz.question)
 
-            quiz.answers?.forEach { answer -> builder.appendln(answer) }
+            quiz.answersContent?.forEach { answer -> builder.appendln(answer) }
 
             builder.appendln(quiz.topics?.sorted()?.joinToString(" ") { "#$it" })
 
@@ -50,16 +52,19 @@ class QuizTextFileParser(
         private val userId: String,
         private val content: String
 ) : QuizSource {
-    override fun getQuizzes(): List<QuizEntity> {
+    override fun getQuizzes(): List<Quiz> {
         val scanner = Scanner(content)
 
         var globalTopics = listOf<String>()
-        var quizzes = listOf<QuizEntity>()
+        var quizzes = listOf<Quiz>()
         var isFirstLine = true
         while (scanner.hasNextLine()) {
             val firstLine = scanner.nextLine().trim()
 
-            val id = if (firstLine.startsWith("id:", ignoreCase = true)) firstLine.substring(3).trim() else null
+            val id = if (firstLine.startsWith("id:", ignoreCase = true))
+                firstLine.substring(3).trim()
+            else
+                null
 
             val question = if (id == null) firstLine else scanner.nextLine().trim()
             if (question.isBlank()) {
@@ -101,9 +106,14 @@ class QuizTextFileParser(
                 answers += line
             }
 
-            quizzes += QuizEntity(id = id, createdBy = userId, question = question,
-                    answers = answers, topics = topics + globalTopics,
-                    isPublished = isPublished, example = example)
+            quizzes += Quiz(
+                    id = id ?: UUID.randomUUID().toString(),
+                    createdBy = userId,
+                    question = question,
+                    answers = QuizAnswer.fromStrings(answers),
+                    topics = topics + globalTopics,
+                    isPublished = isPublished,
+                    example = example)
         }
 
         return quizzes

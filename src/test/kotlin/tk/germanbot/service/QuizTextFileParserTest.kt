@@ -18,7 +18,7 @@ Answer2
 
         Assertions.assertThat(q).hasSize(1)
         Assertions.assertThat(q.first().question).isEqualTo("Question")
-        Assertions.assertThat(q.first().answers).containsExactly("Answer1", "Answer2")
+        Assertions.assertThat(q.first().answersContent).containsExactly("Answer1", "Answer2")
         Assertions.assertThat(q.first().topics).containsExactly("topic1", "topic2")
 
     }
@@ -45,10 +45,10 @@ Answer22
 
         Assertions.assertThat(q).hasSize(2)
         Assertions.assertThat(q[0].question).isEqualTo("Question1")
-        Assertions.assertThat(q[0].answers).containsExactly("Answer11", "Answer12")
+        Assertions.assertThat(q[0].answersContent).containsExactly("Answer11", "Answer12")
         Assertions.assertThat(q[0].topics).containsExactly("topic11", "topic12")
         Assertions.assertThat(q[1].question).isEqualTo("Question2")
-        Assertions.assertThat(q[1].answers).containsExactly("Answer21", "Answer22")
+        Assertions.assertThat(q[1].answersContent).containsExactly("Answer21", "Answer22")
         Assertions.assertThat(q[1].topics).containsExactly("topic21", "topic22")
 
     }
@@ -79,12 +79,12 @@ E:  example2
         Assertions.assertThat(q).hasSize(2)
         Assertions.assertThat(q[0].id).isEqualTo("123")
         Assertions.assertThat(q[0].question).isEqualTo("Question1")
-        Assertions.assertThat(q[0].answers).containsExactly("Answer11", "Answer12")
+        Assertions.assertThat(q[0].answersContent).containsExactly("Answer11", "Answer12")
         Assertions.assertThat(q[0].topics).containsExactly("topic11", "topic12")
         Assertions.assertThat(q[0].example).isEqualTo("example1")
         Assertions.assertThat(q[1].id).isEqualTo("456")
         Assertions.assertThat(q[1].question).isEqualTo("Question2")
-        Assertions.assertThat(q[1].answers).containsExactly("Answer21", "Answer22")
+        Assertions.assertThat(q[1].answersContent).containsExactly("Answer21", "Answer22")
         Assertions.assertThat(q[1].topics).containsExactly("topic21", "topic22")
         Assertions.assertThat(q[1].example).isEqualTo("example2")
 
@@ -111,10 +111,10 @@ Answer22
 
         Assertions.assertThat(q).hasSize(2)
         Assertions.assertThat(q[0].question).isEqualTo("Question1")
-        Assertions.assertThat(q[0].answers).containsExactly("Answer11")
+        Assertions.assertThat(q[0].answersContent).containsExactly("Answer11")
         Assertions.assertThat(q[0].topics).isEmpty()
         Assertions.assertThat(q[1].question).isEqualTo("Question2")
-        Assertions.assertThat(q[1].answers).containsExactly("Answer21", "Answer22")
+        Assertions.assertThat(q[1].answersContent).containsExactly("Answer21", "Answer22")
         Assertions.assertThat(q[1].topics).containsExactly("topic21", "topic22")
 
     }
@@ -142,11 +142,11 @@ Answer22
 
         Assertions.assertThat(q).hasSize(2)
         Assertions.assertThat(q[0].question).isEqualTo("Question1")
-        Assertions.assertThat(q[0].answers).containsExactly("Answer11", "Answer12")
+        Assertions.assertThat(q[0].answersContent).containsExactly("Answer11", "Answer12")
         Assertions.assertThat(q[0].topics).containsExactly("topic11", "topic12", "A1")
         Assertions.assertThat(q[0].isPublished).isTrue()
         Assertions.assertThat(q[1].question).isEqualTo("Question2")
-        Assertions.assertThat(q[1].answers).containsExactly("Answer21", "Answer22")
+        Assertions.assertThat(q[1].answersContent).containsExactly("Answer21", "Answer22")
         Assertions.assertThat(q[1].topics).containsExactly("topic21", "topic22", "A1")
         Assertions.assertThat(q[1].isPublished).isFalse()
 

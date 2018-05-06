@@ -147,13 +147,13 @@ class WelcomeActivity(
 
             var saved = 0
             var errors = 0
-            quizzes.forEach {
+            quizzes.forEach { quiz ->
                 try {
-                    quizService.saveQuiz(userId, it)
+                    quizService.saveQuiz(quiz)
                     saved++
                 } catch (e: Exception) {
                     errors++
-                    logger.error("Unable to save quiz ${it.question} for user: ${userId}", e)
+                    logger.error("Unable to save quiz ${quiz.question} for user: ${userId}", e)
                 }
             }
 
