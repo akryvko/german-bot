@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Profile
 class EsProperties {
     var host: String = "localhost"
     var port: Int = 9200
+    var protocol: String = "http"
     var quizIndexName: String = "quiz"
 }
 
@@ -32,7 +33,7 @@ class EsConfig(@Autowired val props: EsProperties) {
     @Bean
     fun elasticsearchClient() : RestHighLevelClient {
         return RestHighLevelClient(
-                RestClient.builder(HttpHost(props.host, props.port, "http")))
+                RestClient.builder(HttpHost(props.host, props.port, props.protocol)))
     }
 
 }

@@ -20,6 +20,7 @@ aws:
 elasticsearch:
   host: https://vpc-quiz-bot-gacks6diuzqnocbfpac4toiqae.eu-central-1.es.amazonaws.com
   port: 443
+  protocol: https
   quizIndexName: quiz_itest
 
 spring:
