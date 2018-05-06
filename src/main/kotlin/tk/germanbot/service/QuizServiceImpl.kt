@@ -2,8 +2,6 @@ package tk.germanbot.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import tk.germanbot.data.QuizEntity
-import tk.germanbot.data.QuizTopic
 import tk.germanbot.data.es.EsQuizRepository
 import tk.germanbot.model.Quiz
 import tk.germanbot.model.QuizAnswer
@@ -56,8 +54,8 @@ class QuizServiceImpl(
 
     override fun checkAnswer(userId: String, quizId: String, answer: String): AnswerValidationResult {
         val quiz = quizRepository.getQuiz(quizId)
-                .orElseThrow { EntityNotFoundException(QuizEntity::class, quizId) }
-        val validationResult = quizValidator.validate(answer, quiz.answers.map(QuizAnswer::content).toSet())
+                .orElseThrow { EntityNotFoundException(Quiz::class, quizId) }
+        val validationResult = quizValidator.validate(answer, quiz.answersContent.toSet())
 
         statService.updateQuizStat(userId, quizId, quiz.topics, validationResult.result != Correctness.INCORRECT)
 
@@ -96,7 +94,7 @@ class QuizServiceImpl(
                         .map { it.groupValues[1] }
                         .filter(String::isNotBlank)
                         .toSet()
-                        .let { if (it.isEmpty()) setOf(QuizTopic.UNDEFINED) else it }
+                        .let { if (it.isEmpty()) setOf(Quiz.UNDEFINED_TOPIC) else it }
 
                 val q = topicRegex.replace(questionStr, "").trim()
 

@@ -38,6 +38,10 @@ data class Quiz(
 
 ) {
 
+    companion object {
+        val UNDEFINED_TOPIC = "**undef**"
+    }
+
     val answersContent: List<String>
         get() = answers
                 .sortedByDescending(QuizAnswer::isDefault)

@@ -12,10 +12,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.util.StringUtils
-import tk.germanbot.data.QUIZ_TABLE_NANE
-import tk.germanbot.data.QUIZ_TOPIC_TABLE_NANE
-import tk.germanbot.data.QuizEntity
-import tk.germanbot.data.QuizTopic
 import tk.germanbot.data.USER_QUIIZ_STAT_TABLE_NANE
 import tk.germanbot.data.USER_TOPIC_STAT_TABLE_NANE
 import tk.germanbot.data.UserQuizStat
@@ -64,8 +60,6 @@ class AwsConfig(
     fun initialize() {
         val dynamoDB = amazonDynamoDB()
         val dbMapper = DynamoDBMapper(dynamoDB)
-        dynamoTools.createTableIfNotExist(dbMapper, dynamoDB, QuizEntity::class.java, QUIZ_TABLE_NANE)
-        dynamoTools.createTableIfNotExist(dbMapper, dynamoDB, QuizTopic::class.java, QUIZ_TOPIC_TABLE_NANE)
         dynamoTools.createTableIfNotExist(dbMapper, dynamoDB, UserQuizStat::class.java, USER_QUIIZ_STAT_TABLE_NANE)
         dynamoTools.createTableIfNotExist(dbMapper, dynamoDB, UserTopicStat::class.java, USER_TOPIC_STAT_TABLE_NANE)
     }

@@ -4,7 +4,7 @@ import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import tk.germanbot.data.QuizTopic
+import tk.germanbot.model.Quiz
 import tk.germanbot.service.MessageGateway
 import tk.germanbot.service.QuizService
 import tk.germanbot.service.QuizTextFileGenerator
@@ -104,7 +104,7 @@ class WelcomeActivity(
         val tops = quizService.getTopicsToQuizCount(userId).entries
                 .sortedByDescending { it.value }
                 .joinToString(separator = "\n") { "#${it.key}: ${it.value}" }
-                .replace(QuizTopic.UNDEFINED, "other")
+                .replace(Quiz.UNDEFINED_TOPIC, "other")
         messageGateway.textMessage(userId, tops)
     }
 
@@ -118,7 +118,7 @@ class WelcomeActivity(
                     ?.joinToString("\n") { (topic, count) ->
                         "#$topic: ${count.correctCount} / ${count.incorrectCount}"
                     }
-                    ?.replace(QuizTopic.UNDEFINED, "other")
+                    ?.replace(Quiz.UNDEFINED_TOPIC, "other")
 
             messageGateway.textMessage(userId, "Topic: correct / incorrect")
             if (topStat != null) {
