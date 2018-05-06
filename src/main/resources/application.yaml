@@ -17,6 +17,11 @@ aws:
     readThroughput: 10
     writeThroughput: 5
 
+elasticsearch:
+  host: https://vpc-quiz-bot-gacks6diuzqnocbfpac4toiqae.eu-central-1.es.amazonaws.com
+  port: 443
+  quizIndexName: quiz_itest
+
 spring:
   profiles:
     active: dev
@@ -30,3 +35,8 @@ aws:
     endpoint: http://localhost:8000/
     accessKey: testkey
     secretKey: testsecret
+
+elasticsearch:
+  host: localhost
+  port: 9200
+  quizIndexName: quiz_itest
